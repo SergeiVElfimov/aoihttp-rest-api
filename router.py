@@ -19,9 +19,11 @@ class url:
 
 
 urlpatterns = [
-    url('POST', '/token-auth', login, False),
+    url('POST', '/token-auth', auth_token, False),
+    url('GET', '/current-user', current_user, True),
+    url('POST', '/token-refresh', refresh_token, True),
+    url('POST', '/token-verify', verify_token, True),
     url('POST', '/user', add_user, True),
-    url('GET', '/get_user', get_user, True),
 ]
 
 

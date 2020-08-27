@@ -8,8 +8,22 @@ JWT_ALGORITHM = 'HS256'
 JWT_EXP_DELTA_SECONDS = timedelta(days=2)
 
 
-async def get_user(request):
-    return json_response(request.user.to_dict())
+async def current_user(request):
+    return json_response(request.user.to_dict(), status=200)
+
+
+async def verify_token(request):
+    return json_response({'message': 'Token is valid'}, status=200)
+
+
+async def refresh_token(request):
+    user = request.user
+    payload = {
+        'user_id': user.id,
+        'exp': datetime.utcnow() + JWT_EXP_DELTA_SECONDS
+    }
+    jwt_token = jwt.encode(payload, JWT_SECRET, JWT_ALGORITHM)
+    return json_response({'token': jwt_token.decode('utf-8')}, status=200)
 
 
 async def add_user(request):
@@ -30,7 +44,7 @@ async def add_user(request):
         return json_response(response_obj, status=500)
 
 
-async def login(request):
+async def auth_token(request):
     post_data = await request.json()
     try:
         user = get_models(User).filter(
@@ -48,4 +62,4 @@ async def login(request):
         'exp': datetime.utcnow() + JWT_EXP_DELTA_SECONDS
     }
     jwt_token = jwt.encode(payload, JWT_SECRET, JWT_ALGORITHM)
-    return json_response({'token': jwt_token.decode('utf-8')})
+    return json_response({'token': jwt_token.decode('utf-8')}, status=200)
