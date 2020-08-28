@@ -1,19 +1,15 @@
-######OAuth2 авторизации в aiohttp.
+# OAuth2 авторизации в aiohttp.
 
-pip install -r requirements.txt
+> pip install -r requirements.txt
 
-migrate to database
+### migrate to database
+> python3 models.py
 
-python3 models.py
+### create user
+> python3 createsuperuser.py
 
-create user
+### run Application
+> python3 app.py
 
-python3 createsuperuser.py
-
-run Application
-
-python3 app.py
-
-unittest
-
-python3 test.py
+### unittest
+> python3 test.py
