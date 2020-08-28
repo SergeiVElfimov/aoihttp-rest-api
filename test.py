@@ -27,18 +27,22 @@ class LogCaptureRunner(unittest.TextTestRunner):
 
 
 class TestBaseAuth(unittest.TestCase):
+    @classmethod
+    def get_token(self):
+        response = requests.post(
+            'http://localhost:8080/token-auth',
+            data=json.dumps({
+                    "username": config['DEFAULT']['username'],
+                    "password": config['DEFAULT']['password']
+                    })
+        )
+        response = json.loads(response.content)
+        token = response['token']
+        return token
 
     def test_get_token(self):
         try:
-            response = requests.post(
-                'http://localhost:8080/token-auth',
-                data=json.dumps({
-                        "username": config['DEFAULT']['username'],
-                        "password": config['DEFAULT']['password']
-                        })
-            )
-            response = json.loads(response.content)
-            token = response['token']
+            token = self.get_token()
             res = True
         except Exception as e:
             res = False
@@ -46,10 +50,9 @@ class TestBaseAuth(unittest.TestCase):
         self.handler = logging.StreamHandler(self.stream)
         logger.addHandler(self.handler)
         self.assertEqual(True, res)
-        return token
 
     def test_token_verify(self):
-        token = self.test_get_token()
+        token = self.get_token()
         try:
             response = requests.post('http://localhost:8080/token-verify',
                                      headers={"authorization": token})
@@ -67,7 +70,7 @@ class TestBaseAuth(unittest.TestCase):
 
     def test_token_refresh(self):
         try:
-            token = self.test_get_token()
+            token = self.get_token()
             response = requests.post('http://localhost:8080/token-refresh',
                                      headers={"authorization": token})
             response = json.loads(response.content)
@@ -82,7 +85,7 @@ class TestBaseAuth(unittest.TestCase):
 
     def test_get_current_user(self):
         try:
-            token = self.test_get_token()
+            token = self.get_token()
             response = requests.get('http://localhost:8080/current-user',
                                     headers={"authorization": token})
             response = json.loads(response.content)
