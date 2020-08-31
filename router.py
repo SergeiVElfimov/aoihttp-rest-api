@@ -2,7 +2,7 @@ from views import *
 from utils import get_models
 
 
-class url:
+class path:
     """
         Класс для роутинга:
             Поле method - поле определяет метод http запроса к примеру 'GET'.
@@ -19,19 +19,19 @@ class url:
 
 
 urlpatterns = [
-    url('POST', '/token-auth', auth_token, False),
-    url('GET', '/current-user', current_user, True),
-    url('POST', '/token-refresh', refresh_token, True),
-    url('POST', '/token-verify', verify_token, True),
-    url('POST', '/user', add_user, True),
+    path('POST', '/token-auth', auth_token, False),
+    path('GET', '/current-user', current_user, True),
+    path('POST', '/token-refresh', refresh_token, True),
+    path('GET', '/token-verify', verify_token, True),
+    path('POST', '/user', add_user, True),
 ]
 
 
 async def auth_middleware(app, handler):
     async def middleware(request):
-        for i in urlpatterns:
-            if i.private is False:
-                if str(request.url).find(i.url) != -1:
+        for path in urlpatterns:
+            if path.private is False:
+                if str(request.url).find(path.url) != -1:
                     return await handler(request)
         else:
             request.user = None

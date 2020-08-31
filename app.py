@@ -19,4 +19,4 @@ def main(auth_middleware, routes):
 
 if __name__ == '__main__':
     app = main(auth_middleware, urlpatterns)
-    web.run_app(app)
+    web.run_app(app, port=8080)

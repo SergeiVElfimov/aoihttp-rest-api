@@ -28,7 +28,7 @@ class LogCaptureRunner(unittest.TextTestRunner):
 
 class TestBaseAuth(unittest.TestCase):
     @classmethod
-    def get_token(self):
+    def get_token(cls):
         response = requests.post(
             'http://localhost:8080/token-auth',
             data=json.dumps({
@@ -52,10 +52,10 @@ class TestBaseAuth(unittest.TestCase):
         self.assertEqual(True, res)
 
     def test_token_verify(self):
-        token = self.get_token()
         try:
-            response = requests.post('http://localhost:8080/token-verify',
-                                     headers={"authorization": token})
+            token = self.get_token()
+            response = requests.get('http://localhost:8080/token-verify',
+                                    headers={"authorization": token})
             response = json.loads(response.content)
             if response == {'message': 'Token is valid'}:
                 res = True
